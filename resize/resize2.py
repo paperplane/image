@@ -57,5 +57,4 @@ def resize_and_pad(source, output, width_ratio, height_ratio):
 
 
 if __name__ == '__main__':
-    resize('/Users/ipaperplane/Downloads/less_is_more2.jpg', '/Users/ipaperplane/Downloads/output_image3.jpg', 1, 1)
-    resize('/Users/ipaperplane/Downloads/less_is_more2.jpg', '/Users/ipaperplane/Downloads/output_image4.jpg', 1, 1)
+    resize('/Users/ipaperplane/Downloads/back.jpg', '/Users/ipaperplane/Downloads/back1.jpg', 1, 1)

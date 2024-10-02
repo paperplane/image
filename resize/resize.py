@@ -34,7 +34,7 @@ def resize_and_pad(image, target_size):
 
 if __name__ == '__main__':
     # 使用示例
-    image = cv2.imread('/Users/ipaperplane/Downloads/roedalm-frame-black.jpg')
+    image = cv2.imread('/Users/ipaperplane/Downloads/back.jpg')
     target_size = (3000, 3000)  # 目标尺寸
     result = resize_and_pad(image, target_size)
-    cv2.imwrite('/Users/ipaperplane/Downloads/output_image.jpg', result)
+    cv2.imwrite('/Users/ipaperplane/Downloads/background1.jpg', result)
