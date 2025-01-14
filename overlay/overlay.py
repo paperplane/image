@@ -3,30 +3,134 @@ import urllib
 import cv2
 import csv
 from urllib.request import urlopen
-from urllib.error import HTTPError
 import numpy as np
 import os
 
 
 def overlay_frame(fore_im, frame):
-    if frame == '/Users/ipaperplane/Downloads/f/Serenity_in_Stripes_1.png' or frame == '/Users/ipaperplane/Downloads/f/Serenity_in_Stripes_1.jpg':
-        print(frame)
+    # filenames = [
+    #     'Wildflower_Meadow_Traces-M-2.jpg',
+    #     'Feeling_Blue-M-1.jpg',
+    #     'Misty_Haze_B-M-2.jpg',
+    #     'Feeling_Blue-M-2.jpg',
+    #     'Erene_beauty_captured_in_blue_and_white_hues-M-2.jpg',
+    #     'Brave_heart-M-1.jpg'
+    # ]
+    # if frame.split('/')[-1] not in filenames:
+    #     return
+    fh, fw = fore_im.shape[:2]
+    # 选择不同模版
+    if fh / fw > 1.1:
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_s_2.jpg')
+        inner_h = (5840 - 1351)
+        inner_w = (4133 - 1189)
+
+    elif fh / fw > 0.9:
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_s_3.jpg')
+        inner_h = (4975 - 1525)
+        inner_w = (4420 - 970)
+
+    else:
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_s_1.jpg')
+        inner_h = (4206 - 1197)
+        inner_w = (5859 - 1336)
+
+    if inner_w / inner_h > fw / fh:
+        n_fw = math.ceil(inner_w * 0.72)
+        n_fh = math.ceil(inner_w * fh / fw * 0.72)
+    else:
+        n_fh = math.ceil(inner_h * 0.72)
+        n_fw = math.ceil(inner_h * fw / fh * 0.72)
+
+    fore_im = cv2.resize(fore_im, (n_fw, n_fh))
+
+    # 设置原点位置
+    if fh / fw > 1.05:
+        x = 1189 + math.ceil((inner_w - n_fw)/2)
+        y = 1351 + math.ceil((inner_h - n_fh)/2)
+    elif fh / fw > 0.95:
+        x = 970 + math.ceil((inner_w - n_fw)/2)
+        y = 1525 + math.ceil((inner_h - n_fh)/2)
+    else:
+        x = 1336 + math.ceil((inner_w - n_fw)/2)
+        y = 1197 + math.ceil((inner_h - n_fh)/2)
+
+    # 将前景图片置于背景中心
+    back_im[y:y + fore_im.shape[0], x:x + fore_im.shape[1]] = fore_im[:, :, :3]
+
+    cv2.imwrite(frame, back_im)
+
+
+def overlay_h_frame(fore_im, frame):
+    filenames = [
+        'Wildflower_Meadow_Traces-M-2.jpg',
+        'Feeling_Blue-M-1.jpg',
+        'Misty_Haze_B-M-2.jpg',
+        'Feeling_Blue-M-2.jpg',
+        'Erene_beauty_captured_in_blue_and_white_hues-M-2.jpg'
+    ]
+    if frame.split('/')[-1] not in filenames:
+        return
+    fh, fw = fore_im.shape[:2]
+    # 选择不同模版
+    if fh / fw > 1.1:
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_2.jpg')
+        inner_h = (5876 - 1300)
+        inner_w = (4350 - 1040)
+
+    elif fh / fw > 0.9:
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_3.jpg')
+        inner_h = (4907 - 1597)
+        inner_w = (4370 - 1060)
+
+    else:
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_1.jpg')
+        inner_h = (4357 - 1042)
+        inner_w = (5888 - 1308)
+
+    if inner_w / inner_h > fw / fh:
+        n_fw = math.ceil(inner_w * 0.72)
+        n_fh = math.ceil(inner_w * fh / fw * 0.72)
+    else:
+        n_fh = math.ceil(inner_h * 0.72)
+        n_fw = math.ceil(inner_h * fw / fh * 0.72)
+
+    fore_im = cv2.resize(fore_im, (n_fw, n_fh))
+
+    # 设置原点位置
+    if fh / fw > 1.05:
+        x = 1040 + math.ceil((inner_w - n_fw)/2)
+        y = 1300 + math.ceil((inner_h - n_fh)/2)
+    elif fh / fw > 0.95:
+        x = 1060 + math.ceil((inner_w - n_fw)/2)
+        y = 1597 + math.ceil((inner_h - n_fh)/2)
+    else:
+        x = 1308 + math.ceil((inner_w - n_fw)/2)
+        y = 1042 + math.ceil((inner_h - n_fh)/2)
+
+    # 将前景图片置于背景中心
+    back_im[y:y + fore_im.shape[0], x:x + fore_im.shape[1]] = fore_im[:, :, :3]
+
+    cv2.imwrite(frame, back_im)
+
+
+def overlay(fore_im, frame):
     fh, fw = fore_im.shape[:2]
     # 选择不同模版
     if fh / fw > 1.05:
-        back_im = cv2.imread('/Users/ipaperplane/Downloads/back/back_f_2.jpg')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_2.jpg')
     elif fh / fw > 0.95:
-        back_im = cv2.imread('/Users/ipaperplane/Downloads/back/back_f_3.jpg')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_3.jpg')
     else:
-        back_im = cv2.imread('/Users/ipaperplane/Downloads/back/back_f_1.jpg')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_1.jpg')
     bh, bw = back_im.shape[:2]
 
     if bw / bh > fw / fh:
-        n_fh = math.ceil(bh * 0.75)
-        n_fw = math.ceil(bh * 0.75 * fw / fh)
+        n_fh = math.ceil(bh * 0.3)
+        n_fw = math.ceil(bh * 0.3 * fw / fh)
     else:
-        n_fw = math.ceil(bw * 0.75)
-        n_fh = math.ceil(bw * 0.75 * fh / fw)
+        n_fw = math.ceil(bw * 0.3)
+        n_fh = math.ceil(bw * 0.3 * fh / fw)
     fore_im = cv2.resize(fore_im, (n_fw, n_fh))
 
     # 计算居中位置
@@ -44,17 +148,17 @@ def overlay_env(fore_im, env):
     # 选择不同模版
     inner_h, inner_w = 0, 0
     if fh / fw > 1.05:
-        back_im = cv2.imread('/Users/ipaperplane/Downloads/back/back-e-2.jpg')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back-e-2.jpg')
         inner_h = (637 - 210)
         inner_w = (700 - 382)
 
     elif fh / fw > 0.95:
-        back_im = cv2.imread('/Users/ipaperplane/Downloads/back/back-e-3.jpg')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back-e-3.jpg')
         inner_h = (230 - 125)
         inner_w = (880 - 676)
 
     else:
-        back_im = cv2.imread('/Users/ipaperplane/Downloads/back/back-e-1.png')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back-e-1.png')
         inner_h = (234 - 118)
         inner_w = (623 - 448)
 
@@ -123,9 +227,7 @@ def read_foreground_frame(foreground):
 
         names = foreground.split('?')[0].split('/')
         name, suffix = names[-1].split('.')
-        if name == 'Pirate_Ship_Adventure':
-            print(name)
-        frame = '/Users/ipaperplane/Downloads/que/' + name + '-M' + '.' + suffix
+        frame = '/Users/bytedance/Downloads/opts/' + name + '-M' + '.' + suffix
         return fore_im, frame
 
     except:
@@ -145,7 +247,7 @@ def read_foreground_frame(foreground):
 
             names = foreground.split('?')[0].split('/')
             name, suffix = names[-1].split('.')
-            frame = '/Users/ipaperplane/Downloads/opts/' + name + '-M' + '.' + suffix
+            frame = '/Users/bytedance/Downloads/opts/' + name + '-M' + '.' + suffix
             return fore_im, frame
 
 
@@ -154,12 +256,12 @@ def read_foreground_env1(foreground):
     names = foreground.split('?')[0].split('/')
     name, suffix = names[-1].split('.')
     name = name.rstrip('-M-1')
-    environment = '/Users/ipaperplane/Downloads/e/' + name + '-S' + '.' + suffix
+    environment = '/Users/bytedance/Downloads/e/' + name + '-S' + '.' + suffix
     return fore_im, environment
 
 
 def generate_frame():
-    with open('/Users/ipaperplane/Downloads/zenarart.csv', newline='') as csvfile:
+    with open('/Users/bytedance/Downloads/zenarart.csv', newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
             url = row[15]
@@ -169,16 +271,35 @@ def generate_frame():
             for_im, frame_name = read_foreground_frame(foreground=url)
             names = url.split('?')[0].split('/')
             name, suffix = names[-1].split('.')
-            frame_name = '/Users/ipaperplane/Downloads/frame/' + name + '-M' + '.' + suffix
-
+            file_name = name + '-M-1' + '.' + suffix
+            frame_name = '/Users/bytedance/Downloads/debug/' + file_name
             print('end: ' + url)
             if for_im is None:
                 continue
             overlay_frame(for_im, frame_name)
 
 
+def generate_h_frame():
+    with open('/Users/bytedance/Downloads/zenarart.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for row in reader:
+            url = row[15]
+            if not url.startswith('https'):
+                continue
+            print('start: ' + url)
+            for_im, frame_name = read_foreground_frame(foreground=url)
+            names = url.split('?')[0].split('/')
+            name, suffix = names[-1].split('.')
+            file_name = name + '-M-2' + '.' + suffix
+            frame_name = '/Users/bytedance/Downloads/debug/' + file_name
+            print('end: ' + url)
+            if for_im is None:
+                continue
+            overlay_h_frame(for_im, frame_name)
+
+
 def generate_env():
-    dir_path = "/Users/ipaperplane/Downloads/frame"
+    dir_path = "/Users/bytedance/Downloads/frame"
     files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
     for file in files:
         file_path = os.path.join(dir_path, file)
@@ -189,7 +310,7 @@ def generate_env():
 
 
 def generate_frame1():
-    with open('/Users/ipaperplane/Downloads/zenarart.csv', newline='') as csvfile:
+    with open('/Users/bytedance/Downloads/zenarart.csv', newline='') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         for row in reader:
             url = row[15]
@@ -204,26 +325,44 @@ def generate_frame1():
 
 
 if __name__ == '__main__':
-    files = ['https://cdn.shopify.com/s/files/1/0662/6535/0302/files/Dive_into_the_waves_of_serenity_1.png?v=1723479927',
-             'https://cdn.shopify.com/s/files/1/0662/6535/0302/files/Mesmerizing_wavy_lines_1.png?v=1723479928',
-             'https://cdn.shopify.com/s/files/1/0662/6535/0302/files/Serenity_in_Stripes_1.png?v=1723479901',
-             'https://cdn.shopify.com/s/files/1/0662/6535/0302/files/Drawing_in_the_Cafe1.jpg?v=1723479866']
     # generate_frame()
-    # generate_frame1()
-    # generate_env()
+    # generate_h_frame()
 
-    for url in files:
-        for_im, frame_name = read_foreground_frame(foreground=url)
-        if for_im is None:
-            continue
-        overlay_frame(for_im, frame_name)
+    # dir_path = "/Users/bytedance/Downloads/que"
+    # files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
+    # for file in files:
+    #     file_path = os.path.join(dir_path, file)
+    #     for_im, env_name = read_foreground_env1(foreground=file_path)
+    #     if for_im is None:
+    #         continue
+    #     overlay_env(for_im, env_name)
 
-    dir_path = "/Users/ipaperplane/Downloads/que"
-    files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))]
-    for file in files:
-        file_path = os.path.join(dir_path, file)
-        for_im, env_name = read_foreground_env1(foreground=file_path)
-        if for_im is None:
-            continue
-        overlay_env(for_im, env_name)
+    name_list = []
+    with open('/Users/bytedance/Downloads/zenarart.csv', newline='') as csvfile:
+        reader = csv.reader(csvfile, delimiter=',')
+        for row in reader:
+            url = row[15]
+            if not url.startswith('https'):
+                continue
+            print('start: ' + url)
+            names = url.split('?')[0].split('/')
+            name, suffix = names[-1].split('.')
+            name_list.append(name)
 
+    name_list_2 = []
+    with open('/Users/bytedance/Downloads/spu.csv', newline='') as csf:
+        reader = csv.reader(csf, delimiter=',')
+        for row in reader:
+            name = row[1]
+            name_list_2.append(name)
+
+    set1 = set(name_list)
+    set2 = set(name_list_2)
+
+    print(len(set1))
+
+    print(len(set2))
+
+    print(set1 - set2)
+
+    print(set2 - set1)
