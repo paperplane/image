@@ -8,16 +8,6 @@ import os
 
 
 def overlay_frame(fore_im, frame):
-    # filenames = [
-    #     'Wildflower_Meadow_Traces-M-2.jpg',
-    #     'Feeling_Blue-M-1.jpg',
-    #     'Misty_Haze_B-M-2.jpg',
-    #     'Feeling_Blue-M-2.jpg',
-    #     'Erene_beauty_captured_in_blue_and_white_hues-M-2.jpg',
-    #     'Brave_heart-M-1.jpg'
-    # ]
-    # if frame.split('/')[-1] not in filenames:
-    #     return
     fh, fw = fore_im.shape[:2]
     # 选择不同模版
     if fh / fw > 1.1:
@@ -46,14 +36,14 @@ def overlay_frame(fore_im, frame):
 
     # 设置原点位置
     if fh / fw > 1.05:
-        x = 1189 + math.ceil((inner_w - n_fw)/2)
-        y = 1351 + math.ceil((inner_h - n_fh)/2)
+        x = 1189 + math.ceil((inner_w - n_fw) / 2)
+        y = 1351 + math.ceil((inner_h - n_fh) / 2)
     elif fh / fw > 0.95:
-        x = 970 + math.ceil((inner_w - n_fw)/2)
-        y = 1525 + math.ceil((inner_h - n_fh)/2)
+        x = 970 + math.ceil((inner_w - n_fw) / 2)
+        y = 1525 + math.ceil((inner_h - n_fh) / 2)
     else:
-        x = 1336 + math.ceil((inner_w - n_fw)/2)
-        y = 1197 + math.ceil((inner_h - n_fh)/2)
+        x = 1336 + math.ceil((inner_w - n_fw) / 2)
+        y = 1197 + math.ceil((inner_h - n_fh) / 2)
 
     # 将前景图片置于背景中心
     back_im[y:y + fore_im.shape[0], x:x + fore_im.shape[1]] = fore_im[:, :, :3]
@@ -62,15 +52,6 @@ def overlay_frame(fore_im, frame):
 
 
 def overlay_h_frame(fore_im, frame):
-    filenames = [
-        'Wildflower_Meadow_Traces-M-2.jpg',
-        'Feeling_Blue-M-1.jpg',
-        'Misty_Haze_B-M-2.jpg',
-        'Feeling_Blue-M-2.jpg',
-        'Erene_beauty_captured_in_blue_and_white_hues-M-2.jpg'
-    ]
-    if frame.split('/')[-1] not in filenames:
-        return
     fh, fw = fore_im.shape[:2]
     # 选择不同模版
     if fh / fw > 1.1:
@@ -99,14 +80,14 @@ def overlay_h_frame(fore_im, frame):
 
     # 设置原点位置
     if fh / fw > 1.05:
-        x = 1040 + math.ceil((inner_w - n_fw)/2)
-        y = 1300 + math.ceil((inner_h - n_fh)/2)
+        x = 1040 + math.ceil((inner_w - n_fw) / 2)
+        y = 1300 + math.ceil((inner_h - n_fh) / 2)
     elif fh / fw > 0.95:
-        x = 1060 + math.ceil((inner_w - n_fw)/2)
-        y = 1597 + math.ceil((inner_h - n_fh)/2)
+        x = 1060 + math.ceil((inner_w - n_fw) / 2)
+        y = 1597 + math.ceil((inner_h - n_fh) / 2)
     else:
-        x = 1308 + math.ceil((inner_w - n_fw)/2)
-        y = 1042 + math.ceil((inner_h - n_fh)/2)
+        x = 1308 + math.ceil((inner_w - n_fw) / 2)
+        y = 1042 + math.ceil((inner_h - n_fh) / 2)
 
     # 将前景图片置于背景中心
     back_im[y:y + fore_im.shape[0], x:x + fore_im.shape[1]] = fore_im[:, :, :3]
@@ -118,19 +99,19 @@ def overlay(fore_im, frame):
     fh, fw = fore_im.shape[:2]
     # 选择不同模版
     if fh / fw > 1.05:
-        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_2.jpg')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_n_h_2.jpg')
     elif fh / fw > 0.95:
-        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_3.jpg')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_n_h_3.jpg')
     else:
-        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_h_1.jpg')
+        back_im = cv2.imread('/Users/bytedance/Downloads/back/back_n_h_1.jpg')
     bh, bw = back_im.shape[:2]
 
     if bw / bh > fw / fh:
-        n_fh = math.ceil(bh * 0.3)
-        n_fw = math.ceil(bh * 0.3 * fw / fh)
+        n_fh = math.ceil(bh * 0.68)
+        n_fw = math.ceil(bh * 0.68 * fw / fh)
     else:
-        n_fw = math.ceil(bw * 0.3)
-        n_fh = math.ceil(bw * 0.3 * fh / fw)
+        n_fw = math.ceil(bw * 0.68)
+        n_fh = math.ceil(bw * 0.68 * fh / fw)
     fore_im = cv2.resize(fore_im, (n_fw, n_fh))
 
     # 计算居中位置
@@ -345,24 +326,10 @@ if __name__ == '__main__':
             if not url.startswith('https'):
                 continue
             print('start: ' + url)
-            names = url.split('?')[0].split('/')
-            name, suffix = names[-1].split('.')
-            name_list.append(name)
 
-    name_list_2 = []
-    with open('/Users/bytedance/Downloads/spu.csv', newline='') as csf:
-        reader = csv.reader(csf, delimiter=',')
-        for row in reader:
-            name = row[1]
-            name_list_2.append(name)
-
-    set1 = set(name_list)
-    set2 = set(name_list_2)
-
-    print(len(set1))
-
-    print(len(set2))
-
-    print(set1 - set2)
-
-    print(set2 - set1)
+            fore_im, frame = read_foreground_frame(url)
+            if fore_im is None:
+                continue
+            name_list.append(frame)
+            print('end:' + url)
+            overlay(fore_im, frame)
